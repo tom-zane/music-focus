@@ -1,0 +1,21 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+ class="ColorScheme-Text"><style type="text/css" id="current-color-scheme">.ColorScheme-Text { color: #fcfcfc; stroke: currentColor; }</style>
+  <path d="M10 5H3" class="ColorScheme-Text"/>
+  <path d="M12 19H3" class="ColorScheme-Text"/>
+  <path d="M14 3v4" class="ColorScheme-Text"/>
+  <path d="M16 17v4" class="ColorScheme-Text"/>
+  <path d="M21 12h-9" class="ColorScheme-Text"/>
+  <path d="M21 19h-5" class="ColorScheme-Text"/>
+  <path d="M21 5h-7" class="ColorScheme-Text"/>
+  <path d="M8 10v4" class="ColorScheme-Text"/>
+  <path d="M8 12H3" class="ColorScheme-Text"/>
+</svg>

@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Music Focus
+GenericName=Study Music Player
+Comment=Minimal ambient music player for focused study sessions
+Exec=music-focus %F
+Icon=org.kde.musicfocus
+Terminal=false
+Type=Application
+Categories=AudioVideo;Audio;Player;Qt;KDE;
+Keywords=music;study;ambient;focus;player;kde;qml;
+StartupNotify=true
+X-KDE-StartupNotify=true
+StartupWMClass=org.kde.musicfocus
+MimeType=audio/mpeg;audio/flac;audio/ogg;audio/x-wav;

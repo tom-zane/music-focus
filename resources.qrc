@@ -1,0 +1,124 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Main.qml</file>
+        <file>qml/WallpaperView.qml</file>
+        <file>qml/PlaylistOverlay.qml</file>
+        <file>qml/PlaybackOverlay.qml</file>
+        <file>qml/TopControlsOverlay.qml</file>
+        <file>qml/SettingsDialog.qml</file>
+        <file>qml/SettingsCard.qml</file>
+        <file>qml/SettingsToggle.qml</file>
+        <file>qml/SettingsSlider.qml</file>
+        <file>qml/SettingsButton.qml</file>
+        <file>qml/SettingsInfoBox.qml</file>
+        <file>qml/SettingsGeneralTab.qml</file>
+        <file>qml/SettingsPlaybackTab.qml</file>
+        <file>qml/SettingsAppearanceTab.qml</file>
+        <file>qml/SettingsWallpapersTab.qml</file>
+        <file>qml/SettingsVisualizerTab.qml</file>
+        <file>qml/SettingsWidgetsTab.qml</file>
+        <file>qml/SettingsHelpTab.qml</file>
+        <file>qml/InitialSetupDialog.qml</file>
+        <file>qml/FrostedBackground.qml</file>
+        <file>qml/AudioVisualizer.qml</file>
+        <file>qml/TodoOverlay.qml</file>
+        <file>qml/WelcomeSetupView.qml</file>
+        <file>qml/RecoveryView.qml</file>
+        <file>qml/DesktopGridOverlay.qml</file>
+        <file>qml/WidgetWrapper.qml</file>
+        <file>qml/ClockOverlay.qml</file>
+        <file>qml/PomodoroOverlay.qml</file>
+        <file>qml/SettingsPomodoroTab.qml</file>
+        <file>qml/SettingsHistoryTab.qml</file>
+        <file alias="icons/music-focus.svg">resources/icons/music-focus.svg</file>
+        <file alias="icons/music-focus.png">resources/icons/music-focus.png</file>
+        <file alias="icons/org.kde.musicfocus.svg">resources/icons/music-focus.svg</file>
+        <file alias="icons/org.kde.musicfocus.png">resources/icons/music-focus.png</file>
+        <file alias="icons/hicolor/16x16/apps/music-focus.png">resources/icons/hicolor/16x16/apps/music-focus.png</file>
+        <file alias="icons/hicolor/24x24/apps/music-focus.png">resources/icons/hicolor/24x24/apps/music-focus.png</file>
+        <file alias="icons/hicolor/32x32/apps/music-focus.png">resources/icons/hicolor/32x32/apps/music-focus.png</file>
+        <file alias="icons/hicolor/48x48/apps/music-focus.png">resources/icons/hicolor/48x48/apps/music-focus.png</file>
+        <file alias="icons/hicolor/64x64/apps/music-focus.png">resources/icons/hicolor/64x64/apps/music-focus.png</file>
+        <file alias="icons/hicolor/128x128/apps/music-focus.png">resources/icons/hicolor/128x128/apps/music-focus.png</file>
+        <file alias="icons/hicolor/256x256/apps/music-focus.png">resources/icons/hicolor/256x256/apps/music-focus.png</file>
+        <file alias="icons/hicolor/512x512/apps/music-focus.png">resources/icons/hicolor/512x512/apps/music-focus.png</file>
+        <file alias="icons/hicolor/16x16/apps/org.kde.musicfocus.png">resources/icons/hicolor/16x16/apps/org.kde.musicfocus.png</file>
+        <file alias="icons/hicolor/24x24/apps/org.kde.musicfocus.png">resources/icons/hicolor/24x24/apps/org.kde.musicfocus.png</file>
+        <file alias="icons/hicolor/32x32/apps/org.kde.musicfocus.png">resources/icons/hicolor/32x32/apps/org.kde.musicfocus.png</file>
+        <file alias="icons/hicolor/48x48/apps/org.kde.musicfocus.png">resources/icons/hicolor/48x48/apps/org.kde.musicfocus.png</file>
+        <file alias="icons/hicolor/64x64/apps/org.kde.musicfocus.png">resources/icons/hicolor/64x64/apps/org.kde.musicfocus.png</file>
+        <file alias="icons/hicolor/128x128/apps/org.kde.musicfocus.png">resources/icons/hicolor/128x128/apps/org.kde.musicfocus.png</file>
+        <file alias="icons/hicolor/256x256/apps/org.kde.musicfocus.png">resources/icons/hicolor/256x256/apps/org.kde.musicfocus.png</file>
+        <file alias="icons/hicolor/512x512/apps/org.kde.musicfocus.png">resources/icons/hicolor/512x512/apps/org.kde.musicfocus.png</file>
+        <file alias="icons/actions/media-playback-start.svg">resources/icons/actions/media-playback-start.svg</file>
+        <file alias="icons/actions/media-playback-pause.svg">resources/icons/actions/media-playback-pause.svg</file>
+        <file alias="icons/actions/media-skip-backward.svg">resources/icons/actions/media-skip-backward.svg</file>
+        <file alias="icons/actions/media-skip-forward.svg">resources/icons/actions/media-skip-forward.svg</file>
+        <file alias="icons/actions/media-playlist-shuffle.svg">resources/icons/actions/media-playlist-shuffle.svg</file>
+        <file alias="icons/actions/media-playlist-repeat.svg">resources/icons/actions/media-playlist-repeat.svg</file>
+        <file alias="icons/actions/audio-volume-high.svg">resources/icons/actions/audio-volume-high.svg</file>
+        <file alias="icons/actions/audio-volume-muted.svg">resources/icons/actions/audio-volume-muted.svg</file>
+        <file alias="icons/actions/view-fullscreen.svg">resources/icons/actions/view-fullscreen.svg</file>
+        <file alias="icons/actions/view-restore.svg">resources/icons/actions/view-restore.svg</file>
+        <file alias="icons/actions/configure.svg">resources/icons/actions/configure.svg</file>
+        <file alias="icons/actions/view-refresh.svg">resources/icons/actions/view-refresh.svg</file>
+        <file alias="icons/actions/dialog-close.svg">resources/icons/actions/dialog-close.svg</file>
+        <file alias="icons/actions/folder-open.svg">resources/icons/actions/folder-open.svg</file>
+        <file alias="icons/actions/go-previous.svg">resources/icons/actions/go-previous.svg</file>
+        <file alias="icons/actions/go-next.svg">resources/icons/actions/go-next.svg</file>
+        <file alias="icons/lucide/activity.svg">resources/icons/lucide/activity.svg</file>
+        <file alias="icons/lucide/alert-circle.svg">resources/icons/lucide/alert-circle.svg</file>
+        <file alias="icons/lucide/alert-triangle.svg">resources/icons/lucide/alert-triangle.svg</file>
+        <file alias="icons/lucide/arrow-down-right.svg">resources/icons/lucide/arrow-down-right.svg</file>
+        <file alias="icons/lucide/check.svg">resources/icons/lucide/check.svg</file>
+        <file alias="icons/lucide/chevron-down.svg">resources/icons/lucide/chevron-down.svg</file>
+        <file alias="icons/lucide/chevron-left.svg">resources/icons/lucide/chevron-left.svg</file>
+        <file alias="icons/lucide/chevron-right.svg">resources/icons/lucide/chevron-right.svg</file>
+        <file alias="icons/lucide/circle-alert.svg">resources/icons/lucide/circle-alert.svg</file>
+        <file alias="icons/lucide/circle-question-mark.svg">resources/icons/lucide/circle-question-mark.svg</file>
+        <file alias="icons/lucide/clock.svg">resources/icons/lucide/clock.svg</file>
+        <file alias="icons/lucide/disc.svg">resources/icons/lucide/disc.svg</file>
+        <file alias="icons/lucide/eye-off.svg">resources/icons/lucide/eye-off.svg</file>
+        <file alias="icons/lucide/eye.svg">resources/icons/lucide/eye.svg</file>
+        <file alias="icons/lucide/folder-open.svg">resources/icons/lucide/folder-open.svg</file>
+        <file alias="icons/lucide/headphones.svg">resources/icons/lucide/headphones.svg</file>
+        <file alias="icons/lucide/help-circle.svg">resources/icons/lucide/help-circle.svg</file>
+        <file alias="icons/lucide/image-off.svg">resources/icons/lucide/image-off.svg</file>
+        <file alias="icons/lucide/image.svg">resources/icons/lucide/image.svg</file>
+        <file alias="icons/lucide/info.svg">resources/icons/lucide/info.svg</file>
+        <file alias="icons/lucide/layout-grid.svg">resources/icons/lucide/layout-grid.svg</file>
+        <file alias="icons/lucide/list-music.svg">resources/icons/lucide/list-music.svg</file>
+        <file alias="icons/lucide/list-todo.svg">resources/icons/lucide/list-todo.svg</file>
+        <file alias="icons/lucide/maximize-2.svg">resources/icons/lucide/maximize-2.svg</file>
+        <file alias="icons/lucide/maximize.svg">resources/icons/lucide/maximize.svg</file>
+        <file alias="icons/lucide/minimize-2.svg">resources/icons/lucide/minimize-2.svg</file>
+        <file alias="icons/lucide/minimize.svg">resources/icons/lucide/minimize.svg</file>
+        <file alias="icons/lucide/move.svg">resources/icons/lucide/move.svg</file>
+        <file alias="icons/lucide/music.svg">resources/icons/lucide/music.svg</file>
+        <file alias="icons/lucide/palette.svg">resources/icons/lucide/palette.svg</file>
+        <file alias="icons/lucide/pause.svg">resources/icons/lucide/pause.svg</file>
+        <file alias="icons/lucide/pencil.svg">resources/icons/lucide/pencil.svg</file>
+        <file alias="icons/lucide/play.svg">resources/icons/lucide/play.svg</file>
+        <file alias="icons/lucide/plus.svg">resources/icons/lucide/plus.svg</file>
+        <file alias="icons/lucide/repeat-1.svg">resources/icons/lucide/repeat-1.svg</file>
+        <file alias="icons/lucide/repeat.svg">resources/icons/lucide/repeat.svg</file>
+        <file alias="icons/lucide/rotate-ccw.svg">resources/icons/lucide/rotate-ccw.svg</file>
+        <file alias="icons/lucide/rotate-cw.svg">resources/icons/lucide/rotate-cw.svg</file>
+        <file alias="icons/lucide/scaling.svg">resources/icons/lucide/scaling.svg</file>
+        <file alias="icons/lucide/settings.svg">resources/icons/lucide/settings.svg</file>
+        <file alias="icons/lucide/shuffle.svg">resources/icons/lucide/shuffle.svg</file>
+        <file alias="icons/lucide/skip-back.svg">resources/icons/lucide/skip-back.svg</file>
+        <file alias="icons/lucide/skip-forward.svg">resources/icons/lucide/skip-forward.svg</file>
+        <file alias="icons/lucide/sliders-horizontal.svg">resources/icons/lucide/sliders-horizontal.svg</file>
+        <file alias="icons/lucide/sparkles.svg">resources/icons/lucide/sparkles.svg</file>
+        <file alias="icons/lucide/timer.svg">resources/icons/lucide/timer.svg</file>
+        <file alias="icons/lucide/trash-2.svg">resources/icons/lucide/trash-2.svg</file>
+        <file alias="icons/lucide/trash.svg">resources/icons/lucide/trash.svg</file>
+        <file alias="icons/lucide/triangle-alert.svg">resources/icons/lucide/triangle-alert.svg</file>
+        <file alias="icons/lucide/video-off.svg">resources/icons/lucide/video-off.svg</file>
+        <file alias="icons/lucide/video.svg">resources/icons/lucide/video.svg</file>
+        <file alias="icons/lucide/volume-2.svg">resources/icons/lucide/volume-2.svg</file>
+        <file alias="icons/lucide/volume-x.svg">resources/icons/lucide/volume-x.svg</file>
+        <file alias="icons/lucide/x.svg">resources/icons/lucide/x.svg</file>
+    </qresource>
+</RCC>

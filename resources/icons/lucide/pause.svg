@@ -1,0 +1,14 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+ class="ColorScheme-Text"><style type="text/css" id="current-color-scheme">.ColorScheme-Text { color: #fcfcfc; stroke: currentColor; }</style>
+  <rect x="14" y="3" width="5" height="18" rx="1" class="ColorScheme-Text"/>
+  <rect x="5" y="3" width="5" height="18" rx="1" class="ColorScheme-Text"/>
+</svg>

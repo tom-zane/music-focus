@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <style type="text/css" id="current-color-scheme">.ColorScheme-Text { color: #fcfcfc; } </style>
+    <!-- Optically centered play triangle with smooth subtle rounded corners -->
+    <path d="M4.2 2.7 C3.5 2.3 3 2.6 3 3.4 L3 12.6 C3 13.4 3.5 13.7 4.2 13.3 L13.6 8.5 C14.3 8.2 14.3 7.8 13.6 7.5 Z" class="ColorScheme-Text" fill="currentColor"/>
+</svg>
