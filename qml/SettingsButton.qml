@@ -10,8 +10,16 @@ Button {
     property bool isPrimary: false
     property bool isDestructive: false
 
-    implicitHeight: 32
-    implicitWidth: Math.max(90, rowLayout.implicitWidth + 24)
+    leftPadding: 14
+    rightPadding: 14
+    topPadding: 6
+    bottomPadding: 6
+
+    implicitWidth: Math.max(80, btnRow.implicitWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(32, btnRow.implicitHeight + topPadding + bottomPadding)
+    Layout.preferredWidth: implicitWidth
+    Layout.preferredHeight: implicitHeight
+    Layout.alignment: Qt.AlignVCenter
     focusPolicy: Qt.TabFocus
 
     background: Rectangle {
@@ -40,34 +48,41 @@ Button {
         Behavior on border.color { ColorAnimation { duration: 120 } }
     }
 
-    contentItem: RowLayout {
-        id: rowLayout
-        spacing: 6
-        anchors.centerIn: parent
+    contentItem: Item {
+        implicitWidth: btnRow.implicitWidth
+        implicitHeight: btnRow.implicitHeight
 
-        Kirigami.Icon {
-            visible: root.iconSource.length > 0
-            source: root.iconSource
-            isMask: true
-            implicitWidth: 15
-            implicitHeight: 15
-            color: {
-                if (!root.enabled) return "#6c7086";
-                if (root.isPrimary) return "#11111b";
-                if (root.isDestructive) return "#f38ba8";
-                return root.hovered ? "#ffffff" : "#cdd6f4";
+        Row {
+            id: btnRow
+            anchors.centerIn: parent
+            spacing: 6
+
+            Kirigami.Icon {
+                anchors.verticalCenter: parent.verticalCenter
+                visible: root.iconSource.length > 0
+                source: root.iconSource
+                isMask: true
+                implicitWidth: 15
+                implicitHeight: 15
+                color: {
+                    if (!root.enabled) return "#6c7086";
+                    if (root.isPrimary) return "#11111b";
+                    if (root.isDestructive) return "#f38ba8";
+                    return root.hovered ? "#ffffff" : "#cdd6f4";
+                }
             }
-        }
 
-        Text {
-            text: root.text
-            font.pixelSize: 12
-            font.weight: root.isPrimary ? Font.Bold : Font.Medium
-            color: {
-                if (!root.enabled) return "#6c7086";
-                if (root.isPrimary) return "#11111b";
-                if (root.isDestructive) return "#f38ba8";
-                return root.hovered ? "#ffffff" : "#cdd6f4";
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                text: root.text
+                font.pixelSize: 12
+                font.weight: root.isPrimary ? Font.Bold : Font.Medium
+                color: {
+                    if (!root.enabled) return "#6c7086";
+                    if (root.isPrimary) return "#11111b";
+                    if (root.isDestructive) return "#f38ba8";
+                    return root.hovered ? "#ffffff" : "#cdd6f4";
+                }
             }
         }
     }

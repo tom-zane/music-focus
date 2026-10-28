@@ -8,9 +8,13 @@ ScrollView {
     clip: true
     contentWidth: availableWidth
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
+    rightPadding: (ScrollBar.vertical && ScrollBar.vertical.visible) ? (ScrollBar.vertical.width + 12) : 12
+    leftPadding: 6
+    topPadding: 4
+    bottomPadding: 16
 
     ColumnLayout {
-        width: root.availableWidth - 12
+        width: root.availableWidth
         spacing: 16
 
         // Top Action Bar
@@ -20,17 +24,22 @@ ScrollView {
 
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.minimumWidth: 100
                 spacing: 2
                 Text {
                     text: "Desktop Widgets Catalogue"
                     font.pixelSize: 14
                     font.weight: Font.Bold
                     color: "#89b4fa"
+                    Layout.fillWidth: true
+                    elide: Text.ElideRight
                 }
                 Text {
                     text: "Configure floating overlays on your study workspace. Core widgets remain persistent."
                     font.pixelSize: 11
                     color: "#9399b2"
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
                 }
             }
 
@@ -38,6 +47,7 @@ ScrollView {
                 isPrimary: true
                 text: layoutController.editing ? "Done Editing Layout" : "Edit Layout Grid (E)"
                 iconSource: "qrc:/icons/lucide/layout-grid.svg"
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 onClicked: {
                     settingsDialog.close();
                     layoutController.startEditing();

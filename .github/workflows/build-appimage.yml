@@ -4,13 +4,12 @@ on:
   push:
     branches: [ "main", "master" ]
     tags:
-      - 'v*' # Triggers on version tags like v1.0.0
+      - 'v*'
   pull_request:
     branches: [ "main", "master" ]
 
 jobs:
   build:
-    # Using Ubuntu 24.04 to ensure Qt6 and KF6 dependencies are easily available in standard repos
     runs-on: ubuntu-24.04
 
     steps:
@@ -24,14 +23,22 @@ jobs:
           build-essential \
           cmake \
           ninja-build \
+          curl \
+          file \
+          libfuse2t64 \
           qt6-base-dev \
           qt6-declarative-dev \
           qt6-multimedia-dev \
           libqt6svg6-dev \
           libkf6kirigami-dev \
           libkf6coreaddons-dev \
+          qml6-module-qtquick \
           qml6-module-qtquick-controls \
-          qml6-module-qtquick-templates2
+          qml6-module-qtquick-layouts \
+          qml6-module-qtquick-templates2 \
+          qml6-module-qtquick-effects \
+          qml6-module-qtmultimedia \
+          qml6-module-org-kde-kirigami
 
     - name: Configure CMake
       run: |
@@ -48,9 +55,13 @@ jobs:
 
     - name: Package AppImage
       run: |
-        # Make your existing AppImage script executable and run it
         chmod +x packaging/build_appimage.sh
         ./packaging/build_appimage.sh
+
+    - name: Verify AppImage Created
+      run: |
+        test -s MusicFocus-x86_64.AppImage
+        ls -lh MusicFocus-x86_64.AppImage
 
     - name: Upload AppImage Artifact
       uses: actions/upload-artifact@v4

@@ -8,9 +8,15 @@ ScrollView {
     clip: true
     contentWidth: availableWidth
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
+    rightPadding: (ScrollBar.vertical && ScrollBar.vertical.visible) ? (ScrollBar.vertical.width + 12) : 12
+    leftPadding: 6
+    topPadding: 4
+    bottomPadding: 16
+
+    property int editIndex: -1
 
     ColumnLayout {
-        width: root.availableWidth - 12
+        width: root.availableWidth
         spacing: 16
 
         // Top Action Bar
@@ -20,23 +26,29 @@ ScrollView {
 
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.minimumWidth: 100
                 spacing: 2
                 Text {
                     text: "Pomodoro System Configuration"
                     font.pixelSize: 14
                     font.weight: Font.Bold
                     color: "#89b4fa"
+                    Layout.fillWidth: true
+                    elide: Text.ElideRight
                 }
                 Text {
                     text: "Configure focus sessions, custom interval presets, completion sounds, and visual breathing"
                     font.pixelSize: 11
                     color: "#9399b2"
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
                 }
             }
 
             SettingsButton {
                 text: "Restore Defaults"
                 iconSource: "qrc:/icons/lucide/rotate-ccw.svg"
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 onClicked: {
                     if (pomodoroManager) {
                         pomodoroManager.restoreDefaultPresets();
@@ -127,6 +139,34 @@ ScrollView {
                                 }
                             }
 
+                            // Edit / Rename button for custom presets
+                            ToolButton {
+                                visible: !modelData.isDefault
+                                implicitWidth: 26
+                                implicitHeight: 26
+                                ToolTip.text: "Rename or edit preset"
+                                ToolTip.visible: hovered
+                                onClicked: {
+                                    root.editIndex = index;
+                                    editNameInput.text = modelData.name;
+                                    editFocusSpin.value = modelData.focusDurationMinutes;
+                                    editBreakSpin.value = modelData.breakDurationMinutes;
+                                    editPresetBox.visible = true;
+                                    customPresetBox.visible = false;
+                                }
+                                background: Rectangle {
+                                    radius: 13
+                                    color: parent.hovered ? Qt.rgba(0.54, 0.71, 0.98, 0.20) : "transparent"
+                                }
+                                contentItem: Kirigami.Icon {
+                                    source: "qrc:/icons/lucide/pencil.svg"
+                                    isMask: true
+                                    color: parent.hovered ? "#89b4fa" : "#a6adc8"
+                                    implicitWidth: 14
+                                    implicitHeight: 14
+                                }
+                            }
+
                             // Delete button for custom presets
                             ToolButton {
                                 visible: !modelData.isDefault
@@ -166,10 +206,113 @@ ScrollView {
                     iconSource: customPresetBox.visible ? "qrc:/icons/lucide/x.svg" : "qrc:/icons/lucide/plus.svg"
                     onClicked: {
                         customPresetBox.visible = !customPresetBox.visible;
+                        if (customPresetBox.visible) {
+                            editPresetBox.visible = false;
+                        }
                     }
                 }
 
                 Item { Layout.fillWidth: true }
+            }
+
+            // Inline Custom Preset Edit Form
+            Rectangle {
+                id: editPresetBox
+                visible: false
+                Layout.fillWidth: true
+                implicitHeight: editFormCol.implicitHeight + 20
+                radius: 8
+                color: Qt.rgba(0, 0, 0, 0.25)
+                border.color: Qt.rgba(0.65, 0.89, 0.63, 0.4)
+                border.width: 1
+
+                ColumnLayout {
+                    id: editFormCol
+                    anchors.fill: parent
+                    anchors.margins: 12
+                    spacing: 10
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Text {
+                            text: "Rename / Edit Custom Preset"
+                            font.pixelSize: 12
+                            font.weight: Font.Bold
+                            color: "#a6e3a1"
+                        }
+                        Item { Layout.fillWidth: true }
+                        ToolButton {
+                            implicitWidth: 22
+                            implicitHeight: 22
+                            onClicked: editPresetBox.visible = false
+                            contentItem: Kirigami.Icon {
+                                source: "qrc:/icons/lucide/x.svg"
+                                isMask: true
+                                color: "#9399b2"
+                                implicitWidth: 12
+                                implicitHeight: 12
+                            }
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 12
+
+                        TextField {
+                            id: editNameInput
+                            Layout.fillWidth: true
+                            placeholderText: "Preset name"
+                            font.pixelSize: 11
+                            color: "#ffffff"
+                            background: Rectangle {
+                                radius: 6
+                                color: Qt.rgba(1, 1, 1, 0.08)
+                                border.color: editNameInput.activeFocus ? "#a6e3a1" : Qt.rgba(1, 1, 1, 0.15)
+                                border.width: 1
+                            }
+                        }
+
+                        RowLayout {
+                            spacing: 4
+                            Text { text: "Focus:"; font.pixelSize: 11; color: "#cdd6f4" }
+                            SpinBox {
+                                id: editFocusSpin
+                                from: 1
+                                to: 180
+                                editable: true
+                                implicitWidth: 90
+                            }
+                            Text { text: "min"; font.pixelSize: 11; color: "#9399b2" }
+                        }
+
+                        RowLayout {
+                            spacing: 4
+                            Text { text: "Break:"; font.pixelSize: 11; color: "#cdd6f4" }
+                            SpinBox {
+                                id: editBreakSpin
+                                from: 1
+                                to: 60
+                                editable: true
+                                implicitWidth: 85
+                            }
+                            Text { text: "min"; font.pixelSize: 11; color: "#9399b2" }
+                        }
+
+                        SettingsButton {
+                            isPrimary: true
+                            text: "Update"
+                            iconSource: "qrc:/icons/lucide/check.svg"
+                            onClicked: {
+                                var name = editNameInput.text.trim();
+                                if (name.length > 0 && pomodoroManager && root.editIndex >= 0) {
+                                    pomodoroManager.updateCustomPreset(root.editIndex, name, editFocusSpin.value, editBreakSpin.value);
+                                    editPresetBox.visible = false;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             // Inline Custom Preset Creation Form
@@ -374,6 +517,7 @@ ScrollView {
                     model: ["Three Beeps (Default)", "Gentle Chime", "Digital Pulse", "Soft Bell"]
                     currentIndex: settings ? settings.pomodoroSoundStyle : 0
                     implicitWidth: 200
+                    Layout.alignment: Qt.AlignVCenter
                     onActivated: function(index) {
                         if (settings) settings.pomodoroSoundStyle = index;
                     }
@@ -382,6 +526,7 @@ ScrollView {
                 SettingsButton {
                     text: "Preview"
                     iconSource: "qrc:/icons/lucide/volume-2.svg"
+                    Layout.alignment: Qt.AlignVCenter
                     onClicked: {
                         if (pomodoroManager) {
                             pomodoroManager.previewSound(

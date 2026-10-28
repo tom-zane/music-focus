@@ -20,7 +20,9 @@ Rectangle {
 
     ColumnLayout {
         id: mainCol
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
         anchors.margins: 14
         spacing: 12
 
@@ -36,6 +38,7 @@ Rectangle {
                 implicitHeight: 28
                 radius: 6
                 color: Qt.rgba(0.54, 0.71, 0.98, 0.12)
+                Layout.alignment: Qt.AlignVCenter
 
                 Kirigami.Icon {
                     anchors.centerIn: parent
@@ -50,6 +53,7 @@ Rectangle {
             ColumnLayout {
                 Layout.fillWidth: true
                 spacing: 2
+                Layout.alignment: Qt.AlignVCenter
 
                 Text {
                     text: root.title
@@ -66,6 +70,12 @@ Rectangle {
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true
                 }
+            }
+
+            Loader {
+                sourceComponent: root.headerAction
+                visible: root.headerAction !== null
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
             }
         }
 

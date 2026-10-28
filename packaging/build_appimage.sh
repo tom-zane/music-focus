@@ -45,50 +45,114 @@ ln -sf usr/share/icons/hicolor/256x256/apps/org.kde.musicfocus.png "${APPDIR}/mu
 ln -sf org.kde.musicfocus.png "${APPDIR}/.DirIcon"
 
 echo "=== 4. Bundling Qt6 & KF6 Libraries ==="
-cp -a /lib64/libQt6Core.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6Gui.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6Widgets.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6Quick*.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6Qml.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6QmlModels.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6QmlMeta.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6QmlWorkerScript.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6Network.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6OpenGL.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6Multimedia.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6MultimediaQuick.so.6* "${APPDIR}/usr/lib/" 2>/dev/null || true
-cp -a /lib64/libQt6SpatialAudio.so.6* "${APPDIR}/usr/lib/" 2>/dev/null || true
-cp -a /lib64/libavcodec.so* "${APPDIR}/usr/lib/" 2>/dev/null || true
-cp -a /lib64/libavformat.so* "${APPDIR}/usr/lib/" 2>/dev/null || true
-cp -a /lib64/libavutil.so* "${APPDIR}/usr/lib/" 2>/dev/null || true
-cp -a /lib64/libswresample.so* "${APPDIR}/usr/lib/" 2>/dev/null || true
-cp -a /lib64/libswscale.so* "${APPDIR}/usr/lib/" 2>/dev/null || true
-cp -a /lib64/libQt6DBus.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libQt6Wayland* "${APPDIR}/usr/lib/" 2>/dev/null || true
-cp -a /lib64/libQt6WlShellIntegration* "${APPDIR}/usr/lib/" 2>/dev/null || true
-cp -a /lib64/libQt6XcbQpa* "${APPDIR}/usr/lib/" 2>/dev/null || true
-cp -a /lib64/libQt6Svg.so.6* "${APPDIR}/usr/lib/" 2>/dev/null || true
-cp -a /lib64/libKirigami*.so.6* "${APPDIR}/usr/lib/"
-cp -a /lib64/libKF6*.so.6* "${APPDIR}/usr/lib/" 2>/dev/null || true
+# Locate Qt and system library directories dynamically
+QT_LIBS=""
+QT_PLUGINS=""
+QT_QML=""
+if command -v qtpaths6 &>/dev/null; then
+    QT_LIBS="$(qtpaths6 --query QT_INSTALL_LIBS 2>/dev/null || true)"
+    QT_PLUGINS="$(qtpaths6 --query QT_INSTALL_PLUGINS 2>/dev/null || true)"
+    QT_QML="$(qtpaths6 --query QT_INSTALL_QML 2>/dev/null || true)"
+fi
+
+SEARCH_LIB_DIRS=("/usr/lib/x86_64-linux-gnu" "/lib64" "/usr/lib64" "/usr/lib")
+if [ -z "${QT_LIBS}" ] || [ ! -d "${QT_LIBS}" ]; then
+    for d in "${SEARCH_LIB_DIRS[@]}"; do
+        if [ -f "${d}/libQt6Core.so.6" ] || compgen -G "${d}/libQt6Core.so.6*" > /dev/null; then
+            QT_LIBS="${d}"
+            break
+        fi
+    done
+fi
+
+if [ -z "${QT_PLUGINS}" ] || [ ! -d "${QT_PLUGINS}" ]; then
+    for d in "/usr/lib/x86_64-linux-gnu/qt6/plugins" "/usr/lib64/qt6/plugins" "/usr/lib/qt6/plugins"; do
+        if [ -d "${d}" ]; then
+            QT_PLUGINS="${d}"
+            break
+        fi
+    done
+fi
+
+if [ -z "${QT_QML}" ] || [ ! -d "${QT_QML}" ]; then
+    for d in "/usr/lib/x86_64-linux-gnu/qt6/qml" "/usr/lib64/qt6/qml" "/usr/lib/qt6/qml"; do
+        if [ -d "${d}" ]; then
+            QT_QML="${d}"
+            break
+        fi
+    done
+fi
+
+echo "Resolved Qt paths: LIBS=${QT_LIBS}, PLUGINS=${QT_PLUGINS}, QML=${QT_QML}"
+
+copy_lib() {
+    local pattern="$1"
+    local found=0
+    for dir in "${QT_LIBS}" "${SEARCH_LIB_DIRS[@]}"; do
+        if [ -d "${dir}" ]; then
+            for f in "${dir}"/${pattern}; do
+                if [ -e "${f}" ]; then
+                    cp -a "${f}" "${APPDIR}/usr/lib/" 2>/dev/null || true
+                    found=1
+                fi
+            done
+        fi
+        [ ${found} -eq 1 ] && break
+    done
+}
+
+copy_lib "libQt6Core.so.6*"
+copy_lib "libQt6Gui.so.6*"
+copy_lib "libQt6Widgets.so.6*"
+copy_lib "libQt6Quick*.so.6*"
+copy_lib "libQt6Qml*.so.6*"
+copy_lib "libQt6Network.so.6*"
+copy_lib "libQt6OpenGL.so.6*"
+copy_lib "libQt6Multimedia*.so.6*"
+copy_lib "libQt6SpatialAudio.so.6*"
+copy_lib "libQt6DBus.so.6*"
+copy_lib "libQt6Wayland*.so.6*"
+copy_lib "libQt6WlShellIntegration*.so.6*"
+copy_lib "libQt6XcbQpa*.so.6*"
+copy_lib "libQt6Svg.so.6*"
+copy_lib "libKirigami*.so.6*"
+copy_lib "libKF6*.so.6*"
+copy_lib "libavcodec.so*"
+copy_lib "libavformat.so*"
+copy_lib "libavutil.so*"
+copy_lib "libswresample.so*"
+copy_lib "libswscale.so*"
 
 echo "=== 5. Bundling Qt Plugins & QML Modules ==="
-cp -r /usr/lib64/qt6/plugins/platforms "${APPDIR}/usr/plugins/"
-mkdir -p "${APPDIR}/usr/plugins/platformthemes"
-cp -a /usr/lib64/qt6/plugins/platformthemes/libqxdgdesktopportal.so "${APPDIR}/usr/plugins/platformthemes/"
-cp -a /usr/lib64/qt6/plugins/platformthemes/libqgtk3.so "${APPDIR}/usr/plugins/platformthemes/" 2>/dev/null || true
-cp -r /usr/lib64/qt6/plugins/imageformats "${APPDIR}/usr/plugins/"
-cp -r /usr/lib64/qt6/plugins/iconengines "${APPDIR}/usr/plugins/"
-cp -r /usr/lib64/qt6/plugins/kf6 "${APPDIR}/usr/plugins/" 2>/dev/null || true
-cp -r /usr/lib64/qt6/plugins/multimedia "${APPDIR}/usr/plugins/" 2>/dev/null || true
-cp -r /usr/lib64/qt6/plugins/wayland-shell-integration "${APPDIR}/usr/plugins/" 2>/dev/null || true
-cp -r /usr/lib64/qt6/plugins/wayland-graphics-integration-client "${APPDIR}/usr/plugins/" 2>/dev/null || true
-cp -r /usr/lib64/qt6/plugins/wayland-decoration-client "${APPDIR}/usr/plugins/" 2>/dev/null || true
-cp -r /usr/lib64/qt6/plugins/xcbglintegrations "${APPDIR}/usr/plugins/" 2>/dev/null || true
-cp -r /usr/lib64/qt6/plugins/tls "${APPDIR}/usr/plugins/" 2>/dev/null || true
+if [ -n "${QT_PLUGINS}" ] && [ -d "${QT_PLUGINS}" ]; then
+    if [ -d "${QT_PLUGINS}/platforms" ]; then
+        cp -r "${QT_PLUGINS}/platforms" "${APPDIR}/usr/plugins/"
+    fi
+    mkdir -p "${APPDIR}/usr/plugins/platformthemes"
+    for f in "${QT_PLUGINS}/platformthemes"/libqxdgdesktopportal.so "${QT_PLUGINS}/platformthemes"/libqgtk3.so; do
+        if [ -f "${f}" ]; then
+            cp -a "${f}" "${APPDIR}/usr/plugins/platformthemes/"
+        fi
+    done
+    for plugin_group in imageformats iconengines kf6 multimedia wayland-shell-integration wayland-graphics-integration-client wayland-decoration-client xcbglintegrations tls; do
+        if [ -d "${QT_PLUGINS}/${plugin_group}" ]; then
+            cp -r "${QT_PLUGINS}/${plugin_group}" "${APPDIR}/usr/plugins/"
+        fi
+    done
+fi
 
-cp -r /usr/lib64/qt6/qml/QtQuick "${APPDIR}/usr/qml/"
-cp -r /usr/lib64/qt6/qml/QtMultimedia "${APPDIR}/usr/qml/"
-cp -r /usr/lib64/qt6/qml/org/kde/* "${APPDIR}/usr/qml/org/kde/" 2>/dev/null || true
+if [ -n "${QT_QML}" ] && [ -d "${QT_QML}" ]; then
+    if [ -d "${QT_QML}/QtQuick" ]; then
+        cp -r "${QT_QML}/QtQuick" "${APPDIR}/usr/qml/"
+    fi
+    if [ -d "${QT_QML}/QtMultimedia" ]; then
+        cp -r "${QT_QML}/QtMultimedia" "${APPDIR}/usr/qml/"
+    fi
+    if [ -d "${QT_QML}/org/kde" ]; then
+        mkdir -p "${APPDIR}/usr/qml/org/kde"
+        cp -r "${QT_QML}/org/kde/"* "${APPDIR}/usr/qml/org/kde/" 2>/dev/null || true
+    fi
+fi
 
 # Create qt.conf
 cat > "${APPDIR}/usr/bin/qt.conf" << 'EOF'
@@ -136,10 +200,12 @@ kbuildsycoca6 --noincremental 2>/dev/null || true
 echo "=== 6. Packaging into AppImage ==="
 mkdir -p "${TOOLS_DIR}"
 if [ ! -f "${TOOLS_DIR}/appimagetool" ]; then
+    echo "Downloading appimagetool..."
     curl -sL -o "${TOOLS_DIR}/appimagetool" https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
     chmod +x "${TOOLS_DIR}/appimagetool"
 fi
 
+export APPIMAGE_EXTRACT_AND_RUN=1
 ARCH=x86_64 "${TOOLS_DIR}/appimagetool" "${APPDIR}" "${OUTPUT_APPIMAGE}"
 echo "AppImage created successfully at ${OUTPUT_APPIMAGE}"
 

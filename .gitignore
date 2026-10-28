@@ -1,9 +1,9 @@
-#CMake & Build directories
-
+# CMake & Build Directories
 build/
-build-/
-CMakeCache.txt
+build-*/
+cmake-build-*/
 CMakeFiles/
+CMakeCache.txt
 CMakeScripts/
 Makefile
 cmake_install.cmake
@@ -11,44 +11,46 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 Testing/
-.ninja_
 *.ninja
+.ninja_*
 
-#Qt Autogen & Build Artifacts
-
-autogen/
-autogen/
+# Qt MOC / Autogen & Build Artifacts
+*_autogen/
 .qt/
-moc.cpp
-qrc_.cpp
-ui_.h
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
 *.o
-*.d
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
 *.obj
 
-#Binaries and Executables
-
+# Compiled Executables & Binaries
 music-focus
 test_backend
 a.out
-*.so
-.so.
-*.a
-*.dll
 *.exe
 
-#Packaging (linuxdeployqt / AppImage)
-
-packaging/AppDir/usr/
-packaging/AppDir/AppRun
-packaging/AppDir/.DirIcon
+# AppImage Packaging
+packaging/AppDir/
+packaging/tools/
 *.AppImage
 *.zsync
 
-#OS / Editor files
+# Development & Scratch Files
+scratch/
+*.log
+
+# OS & Editor Files
 .directory
-DS_Store
-.idea/
+.DS_Store
+Thumbs.db
 .vscode/
+.idea/
 *.swp
-*~MusicFocus-x86_64.AppImage
+*.swo
+*~

@@ -39,6 +39,7 @@ struct FocusSessionRecord {
 class PomodoroManager : public QObject
 {
     Q_OBJECT
+    friend class BackendTest;
 
     // Phase & Timer State
     Q_PROPERTY(int sessionType READ sessionType NOTIFY sessionTypeChanged)

@@ -8,11 +8,15 @@ ScrollView {
     clip: true
     contentWidth: availableWidth
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
+    rightPadding: (ScrollBar.vertical && ScrollBar.vertical.visible) ? (ScrollBar.vertical.width + 12) : 12
+    leftPadding: 6
+    topPadding: 4
+    bottomPadding: 16
 
     signal navigateToWallpapers()
 
     ColumnLayout {
-        width: root.availableWidth - 12
+        width: root.availableWidth
         spacing: 16
 
         // 1. Interface Transparency & Background Effects Card

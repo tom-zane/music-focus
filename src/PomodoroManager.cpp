@@ -866,6 +866,42 @@ QVariantMap PomodoroManager::monthData(int year, int month) const
     }
 
     res[QStringLiteral("days")] = daysList;
+
+    // Previous month trailing days to complete leading weekday alignment
+    QDate prevMonthLastDay = firstOfMonth.addDays(-1);
+    int prevMonthTotalDays = prevMonthLastDay.daysInMonth();
+    int leadingDaysCount = firstDayOfWeek - 1; // 1 = Monday -> 0 leading
+    QVariantList prevDaysList;
+    for (int i = leadingDaysCount - 1; i >= 0; --i) {
+        int d = prevMonthTotalDays - i;
+        QDate pDate(prevMonthLastDay.year(), prevMonthLastDay.month(), d);
+        QVariantMap dm;
+        dm[QStringLiteral("day")] = d;
+        dm[QStringLiteral("dateString")] = pDate.toString(Qt::ISODate);
+        dm[QStringLiteral("isOutsideMonth")] = true;
+        dm[QStringLiteral("targetYear")] = pDate.year();
+        dm[QStringLiteral("targetMonth")] = pDate.month();
+        prevDaysList.append(dm);
+    }
+    res[QStringLiteral("prevMonthDays")] = prevDaysList;
+
+    // Next month leading days to complete trailing calendar cells
+    int totalCellsSoFar = leadingDaysCount + daysInMonth;
+    int trailingDaysCount = (7 - (totalCellsSoFar % 7)) % 7;
+    QDate nextMonthFirstDay = firstOfMonth.addMonths(1);
+    QVariantList nextDaysList;
+    for (int d = 1; d <= trailingDaysCount; ++d) {
+        QDate nDate(nextMonthFirstDay.year(), nextMonthFirstDay.month(), d);
+        QVariantMap dm;
+        dm[QStringLiteral("day")] = d;
+        dm[QStringLiteral("dateString")] = nDate.toString(Qt::ISODate);
+        dm[QStringLiteral("isOutsideMonth")] = true;
+        dm[QStringLiteral("targetYear")] = nDate.year();
+        dm[QStringLiteral("targetMonth")] = nDate.month();
+        nextDaysList.append(dm);
+    }
+    res[QStringLiteral("nextMonthDays")] = nextDaysList;
+
     return res;
 }
 

@@ -8,9 +8,13 @@ ScrollView {
     clip: true
     contentWidth: availableWidth
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
+    rightPadding: (ScrollBar.vertical && ScrollBar.vertical.visible) ? (ScrollBar.vertical.width + 12) : 12
+    leftPadding: 6
+    topPadding: 4
+    bottomPadding: 16
 
     ColumnLayout {
-        width: root.availableWidth - 12
+        width: root.availableWidth
         spacing: 16
 
         // 1. Music Library Section
@@ -54,6 +58,7 @@ ScrollView {
                     SettingsButton {
                         text: "Browse..."
                         iconSource: "qrc:/icons/lucide/folder-open.svg"
+                        Layout.alignment: Qt.AlignVCenter
                         onClicked: appController.promptForMusicDirectory()
                     }
                 }

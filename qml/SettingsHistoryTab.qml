@@ -8,6 +8,10 @@ ScrollView {
     clip: true
     contentWidth: availableWidth
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
+    rightPadding: (ScrollBar.vertical && ScrollBar.vertical.visible) ? (ScrollBar.vertical.width + 12) : 12
+    leftPadding: 6
+    topPadding: 4
+    bottomPadding: 16
 
     property int currentYear: new Date().getFullYear()
     property int currentMonth: new Date().getMonth() + 1
@@ -31,7 +35,7 @@ ScrollView {
     }
 
     ColumnLayout {
-        width: root.availableWidth - 12
+        width: root.availableWidth
         spacing: 16
 
         // Top Action Bar
@@ -41,17 +45,22 @@ ScrollView {
 
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.minimumWidth: 100
                 spacing: 2
                 Text {
                     text: "Focus History & Analytics"
                     font.pixelSize: 14
                     font.weight: Font.Bold
                     color: "#89b4fa"
+                    Layout.fillWidth: true
+                    elide: Text.ElideRight
                 }
                 Text {
                     text: "Accurate historical records of your completed study intervals"
                     font.pixelSize: 11
                     color: "#9399b2"
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
                 }
             }
         }
@@ -319,6 +328,7 @@ ScrollView {
                 SettingsButton {
                     text: "Jump to Today"
                     iconSource: "qrc:/icons/lucide/rotate-ccw.svg"
+                    Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                     onClicked: {
                         var now = new Date();
                         root.currentYear = now.getFullYear();
@@ -344,8 +354,8 @@ ScrollView {
                         Text { text: "Year:"; color: "#ffffff"; font.pixelSize: 12 }
                         SpinBox {
                             id: yearPickerSpin
-                            from: 2020
-                            to: 2040
+                            from: 2000
+                            to: 2100
                             value: root.currentYear
                             editable: true
                         }
@@ -408,19 +418,48 @@ ScrollView {
                 rowSpacing: 4
                 columnSpacing: 4
 
-                // Leading empty cells before 1st of month
+                // Leading days from previous month (distinguished outside dates)
                 Repeater {
-                    model: (root.currentMonthData.firstDayOfWeek ? root.currentMonthData.firstDayOfWeek - 1 : 0)
+                    model: root.currentMonthData.prevMonthDays || []
 
                     Rectangle {
                         Layout.fillWidth: true
                         implicitHeight: 46
                         radius: 6
-                        color: "transparent"
+                        color: Qt.rgba(1, 1, 1, 0.015)
+                        border.color: cellHoverPrev.hovered ? Qt.rgba(1, 1, 1, 0.15) : Qt.rgba(1, 1, 1, 0.04)
+                        border.width: 1
+
+                        HoverHandler { id: cellHoverPrev }
+                        TapHandler {
+                            onTapped: {
+                                root.currentYear = modelData.targetYear;
+                                root.currentMonth = modelData.targetMonth;
+                                root.selectedDateString = modelData.dateString;
+                                root.updateMonth();
+                            }
+                        }
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 4
+                            spacing: 2
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Text {
+                                    text: modelData.day.toString()
+                                    font.pixelSize: 10
+                                    color: "#585b70"
+                                }
+                                Item { Layout.fillWidth: true }
+                            }
+                            Item { Layout.fillHeight: true }
+                        }
                     }
                 }
 
-                // Month Day Cells
+                // Current Month Day Cells
                 Repeater {
                     model: root.currentMonthData.days || []
 
@@ -490,6 +529,47 @@ ScrollView {
                                 elide: Text.ElideRight
                                 Layout.alignment: Qt.AlignHCenter
                             }
+                        }
+                    }
+                }
+
+                // Trailing days from next month (distinguished outside dates)
+                Repeater {
+                    model: root.currentMonthData.nextMonthDays || []
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        implicitHeight: 46
+                        radius: 6
+                        color: Qt.rgba(1, 1, 1, 0.015)
+                        border.color: cellHoverNext.hovered ? Qt.rgba(1, 1, 1, 0.15) : Qt.rgba(1, 1, 1, 0.04)
+                        border.width: 1
+
+                        HoverHandler { id: cellHoverNext }
+                        TapHandler {
+                            onTapped: {
+                                root.currentYear = modelData.targetYear;
+                                root.currentMonth = modelData.targetMonth;
+                                root.selectedDateString = modelData.dateString;
+                                root.updateMonth();
+                            }
+                        }
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 4
+                            spacing: 2
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Text {
+                                    text: modelData.day.toString()
+                                    font.pixelSize: 10
+                                    color: "#585b70"
+                                }
+                                Item { Layout.fillWidth: true }
+                            }
+                            Item { Layout.fillHeight: true }
                         }
                     }
                 }

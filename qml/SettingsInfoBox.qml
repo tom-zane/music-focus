@@ -11,7 +11,7 @@ Rectangle {
     property bool isSuccess: false
 
     Layout.fillWidth: true
-    implicitHeight: Math.max(38, rowLayout.implicitHeight + 16)
+    implicitHeight: Math.max(38, rowLayout.implicitHeight + 20)
     radius: 8
 
     color: {
@@ -28,7 +28,9 @@ Rectangle {
 
     RowLayout {
         id: rowLayout
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
         anchors.margins: 10
         spacing: 10
 

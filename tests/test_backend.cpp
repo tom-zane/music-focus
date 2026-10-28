@@ -862,6 +862,7 @@ void BackendTest::testPomodoroPresetsManagement()
 void BackendTest::testPomodoroHistoryAndHeatmapCalculations()
 {
     SettingsManager settings;
+    settings.setClock24Hour(true);
     PomodoroManager pomodoro(&settings);
 
     pomodoro.clearHistory();
@@ -876,6 +877,8 @@ void BackendTest::testPomodoroHistoryAndHeatmapCalculations()
     QDate today = QDate::currentDate();
     QVariantMap monthData = pomodoro.monthData(today.year(), today.month());
     QVERIFY(monthData.contains(QStringLiteral("days")));
+    QVERIFY(monthData.contains(QStringLiteral("prevMonthDays")));
+    QVERIFY(monthData.contains(QStringLiteral("nextMonthDays")));
     QVariantList days = monthData.value(QStringLiteral("days")).toList();
     QCOMPARE(days.size(), today.daysInMonth());
 
@@ -883,9 +886,133 @@ void BackendTest::testPomodoroHistoryAndHeatmapCalculations()
     QVariantMap todayItem = days.at(today.day() - 1).toMap();
     QCOMPARE(todayItem.value(QStringLiteral("heatmapIntensity")).toInt(), 0);
 
-    // Verify sessionsForDate returns empty list
+    // Verify sessionsForDate returns empty list initially
     QVariantList sessionsToday = pomodoro.sessionsForDate(today.toString(Qt::ISODate));
     QCOMPARE(sessionsToday.size(), 0);
+
+    // 1. Add completed focus sessions for today
+    FocusSessionRecord r1;
+    r1.id = QStringLiteral("sess-today-1");
+    r1.sessionType = QStringLiteral("focus");
+    r1.startTime = QDateTime(today, QTime(9, 0, 0));
+    r1.endTime = QDateTime(today, QTime(9, 25, 0));
+    r1.durationSeconds = 1500;
+    r1.targetDurationSeconds = 1500;
+    r1.completed = true;
+    pomodoro.addHistoryRecord(r1);
+
+    FocusSessionRecord r2;
+    r2.id = QStringLiteral("sess-today-2");
+    r2.sessionType = QStringLiteral("focus");
+    r2.startTime = QDateTime(today, QTime(10, 0, 0));
+    r2.endTime = QDateTime(today, QTime(10, 25, 0));
+    r2.durationSeconds = 1500;
+    r2.targetDurationSeconds = 1500;
+    r2.completed = true;
+    pomodoro.addHistoryRecord(r2);
+
+    QCOMPARE(pomodoro.todayFocusSeconds(), 3000);
+    QCOMPARE(pomodoro.todaySessionCount(), 2);
+    QCOMPARE(pomodoro.todayFormattedFocusTime(), QStringLiteral("50m"));
+
+    // Verify today's sessions list
+    sessionsToday = pomodoro.sessionsForDate(today.toString(Qt::ISODate));
+    QCOMPARE(sessionsToday.size(), 2);
+    QVariantMap sMap1 = sessionsToday.at(0).toMap();
+    QCOMPARE(sMap1.value("duration").toString(), QStringLiteral("25m"));
+    QCOMPARE(sMap1.value("timeRange").toString(), QStringLiteral("09:00 – 09:25"));
+
+    // 2. Test 12-hour vs 24-hour timestamp formatting impact
+    settings.setClock24Hour(false);
+    sessionsToday = pomodoro.sessionsForDate(today.toString(Qt::ISODate));
+    sMap1 = sessionsToday.at(0).toMap();
+    QCOMPARE(sMap1.value("timeRange").toString(), QStringLiteral("09:00 AM – 09:25 AM"));
+    settings.setClock24Hour(true);
+
+    // 3. Test cross-midnight session attribution (started at 23:45 yesterday, finished at 00:10 today)
+    QDate yesterday = today.addDays(-1);
+    FocusSessionRecord rCross;
+    rCross.id = QStringLiteral("sess-cross-midnight");
+    rCross.sessionType = QStringLiteral("focus");
+    rCross.startTime = QDateTime(yesterday, QTime(23, 45, 0));
+    rCross.endTime = QDateTime(today, QTime(0, 10, 0));
+    rCross.durationSeconds = 1500;
+    rCross.targetDurationSeconds = 1500;
+    rCross.completed = true;
+    pomodoro.addHistoryRecord(rCross);
+
+    // Cross-midnight session is attributed to its local start date (yesterday)
+    QCOMPARE(pomodoro.todayFocusSeconds(), 3000); // today unchanged
+    QVariantList sessionsYest = pomodoro.sessionsForDate(yesterday.toString(Qt::ISODate));
+    QCOMPARE(sessionsYest.size(), 1);
+    QCOMPARE(sessionsYest.at(0).toMap().value("id").toString(), QStringLiteral("sess-cross-midnight"));
+
+    // 4. Test Heatmap scale intensity thresholds
+    // Pick day 1 of current month for testing threshold scale
+    pomodoro.clearHistory();
+    QDate testDay(today.year(), today.month(), 1);
+
+    auto addForDay = [&](int durationSecs) {
+        FocusSessionRecord r;
+        r.id = QStringLiteral("test-intensity");
+        r.sessionType = QStringLiteral("focus");
+        r.startTime = QDateTime(testDay, QTime(8, 0, 0));
+        r.endTime = r.startTime.addSecs(durationSecs);
+        r.durationSeconds = durationSecs;
+        r.targetDurationSeconds = durationSecs;
+        r.completed = true;
+        pomodoro.addHistoryRecord(r);
+    };
+
+    // < 2 hours (1 hr = 3600s) -> intensity 0
+    addForDay(3600);
+    monthData = pomodoro.monthData(today.year(), today.month());
+    days = monthData.value("days").toList();
+    QCOMPARE(days.at(0).toMap().value("heatmapIntensity").toInt(), 0);
+
+    // 2 hours (7200s) -> intensity 1
+    pomodoro.clearHistory();
+    addForDay(7200);
+    monthData = pomodoro.monthData(today.year(), today.month());
+    days = monthData.value("days").toList();
+    QCOMPARE(days.at(0).toMap().value("heatmapIntensity").toInt(), 1);
+
+    // 4 hours (14400s) -> intensity 2
+    pomodoro.clearHistory();
+    addForDay(14400);
+    monthData = pomodoro.monthData(today.year(), today.month());
+    days = monthData.value("days").toList();
+    QCOMPARE(days.at(0).toMap().value("heatmapIntensity").toInt(), 2);
+
+    // 6 hours (21600s) -> intensity 3
+    pomodoro.clearHistory();
+    addForDay(21600);
+    monthData = pomodoro.monthData(today.year(), today.month());
+    days = monthData.value("days").toList();
+    QCOMPARE(days.at(0).toMap().value("heatmapIntensity").toInt(), 3);
+
+    // 8 hours (28800s) -> intensity 4
+    pomodoro.clearHistory();
+    addForDay(28800);
+    monthData = pomodoro.monthData(today.year(), today.month());
+    days = monthData.value("days").toList();
+    QCOMPARE(days.at(0).toMap().value("heatmapIntensity").toInt(), 4);
+
+    // 10 hours or more (36000s) -> intensity 5
+    pomodoro.clearHistory();
+    addForDay(36000);
+    monthData = pomodoro.monthData(today.year(), today.month());
+    days = monthData.value("days").toList();
+    QCOMPARE(days.at(0).toMap().value("heatmapIntensity").toInt(), 5);
+
+    // 5. Verify persistence across application restarts
+    {
+        PomodoroManager reloadedPomodoro(&settings);
+        QVariantMap reloadedMonth = reloadedPomodoro.monthData(today.year(), today.month());
+        QVariantList reloadedDays = reloadedMonth.value("days").toList();
+        QCOMPARE(reloadedDays.at(0).toMap().value("heatmapIntensity").toInt(), 5);
+        QCOMPARE(reloadedDays.at(0).toMap().value("focusSeconds").toInt(), 36000);
+    }
 }
 
 void BackendTest::testPomodoroLayoutIntegration()
@@ -895,8 +1022,8 @@ void BackendTest::testPomodoroLayoutIntegration()
 
     // Pomodoro widget must be registered
     QVERIFY(layout.isWidgetRegistered("pomodoro"));
-    QCOMPARE(layout.widgetMinWidth("pomodoro"), 18);
-    QCOMPARE(layout.widgetMinHeight("pomodoro"), 10);
+    QCOMPARE(layout.widgetMinWidth("pomodoro"), 10);
+    QCOMPARE(layout.widgetMinHeight("pomodoro"), 6);
 
     // Non-mandatory widget check
     QVERIFY(!layout.isMandatoryWidget("pomodoro"));

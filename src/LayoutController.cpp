@@ -155,8 +155,8 @@ void LayoutController::initializeDefaults()
     pomodoro.y = 18;
     pomodoro.w = 30;
     pomodoro.h = 16;
-    pomodoro.minW = 18;
-    pomodoro.minH = 10;
+    pomodoro.minW = 10;
+    pomodoro.minH = 6;
     pomodoro.maxW = 60;
     pomodoro.maxH = 40;
     pomodoro.visible = m_settings ? m_settings->pomodoroVisible() : false;
